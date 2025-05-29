@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  nessus:
+    image: tenable/nessus:10.8.4-ubuntu
+    container_name: nessus
+    networks:
+     - frontend
+    # ports:
+      # - "8834:8834"
+    volumes:
+      - ./nessus-data:/opt/nessus/var/nessus
+    environment:
+      #ACTIVATION_CODE: HUNQ-N4H6-9UEK-GR9Z-ACU7
+      USERNAME: meassovanara
+      PASSWORD: Nara@123
+    restart: unless-stopped
+    labels:
+     traefik.enable: "true"
+    #  traefik.http.routers.homepage-prod-1-http.entrypoints: "web"
+    #  traefik.http.routers.homepage-prod-1-http.rule: "Host(`dash.siri.naralab.cloud`)"
+     traefik.http.routers.nessus-https.entrypoints: "websecure"
+     traefik.http.routers.nessus-https.rule: "Host(`nessus.siri.naralab.cloud`)"
+     traefik.http.routers.nessus-https.tls: "true"
+     traefik.http.routers.nessus-https.tls.certresolver: "cloudflare"
+     traefik.http.services.nessus-https.loadbalancer.server.port: "8834"
+     traefik.http.services.nessus-https.loadbalancer.server.scheme: "https"
+
+networks:
+ frontend:
+   external: true
+ backend:
+   external: true

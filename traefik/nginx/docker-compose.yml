@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  nginx:
+    container_name: nginx-demo
+    image: nginx:latest
+    networks:
+      - frontend
+    labels:
+      - traefik.enable=true
+      # - traefik.http.routers.nginx-http.rule=Host("nginx.siri.naralab.cloud")
+      # - traefik.http.routers.nginx-http.entrypoints=web
+      - traefik.http.routers.nginx-https.tls=true
+      - traefik.http.routers.nginx-https.tls.certresolver=cloudflare
+      - traefik.http.routers.nginx-https.entrypoints=websecure
+      - traefik.http.routers.nginx-https.rule=Host("nginx.siri.naralab.cloud")
+    restart: unless-stopped
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true
